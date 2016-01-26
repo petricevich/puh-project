@@ -39,6 +39,8 @@ executable user
                        transformers ==0.3.0.0,
                        conduit ==1.2.5.1,
                        monad-logger ==0.3.17,
+                       pwstore-purehaskell ==2.1.4,
+                       bytestring ==0.10.4.0,
                        text
   default-language:    Haskell2010
 
