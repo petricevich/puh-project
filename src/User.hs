@@ -84,11 +84,22 @@ getUser ident = runSqlite database $ do
         Just (Entity _ u) -> return u
         Nothing           -> error $ "User with the identifier " ++ show ident ++ " is not in the database"
 
-{-}
+
+isRole :: User -> Role -> Bool
+isRole (User {userRole = (Professor)}) (Professor) = True
+isRole (User {userRole = (TA _ _)})    (TA _ _)    = True
+isRole (User {userRole = (Student _)}) (Student _) = True
+isRole _                               _           = False
+
+
+isInYear :: User -> Integer -> Bool
+isInYear (User {userRole = (Professor)})        _ = True
+isInYear (User {userRole = (TA startTA endTA)}) x = startTA <= x && x <= endTA
+isInYear (User {userRole = (Student year)})     x = year == x
+
+
 isRoleInYear :: User -> Role -> Integer -> Bool
-isRoleInYear _ (Professor) _ = True
-isRoleInYear user (TA taStart taEnd)
--}
+isRoleInYear user role x = isRole user role && isInYear user x
 
 
 main :: IO ()
