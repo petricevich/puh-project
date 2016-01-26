@@ -1,5 +1,3 @@
---module User where
-
 {-# LANGUAGE EmptyDataDecls             #-}
 {-# LANGUAGE FlexibleContexts           #-}
 {-# LANGUAGE GADTs                      #-}
@@ -9,7 +7,16 @@
 {-# LANGUAGE QuasiQuotes                #-}
 {-# LANGUAGE TemplateHaskell            #-}
 {-# LANGUAGE TypeFamilies               #-}
-import Control.Monad.IO.Class (liftIO)
+module Users ( createUser
+             , updateUser
+             , deleteUser
+             , listUsers
+             , listUsersInRole
+             , getUser
+             , isRoleInYear
+             ) where
+
+
 import Database.Persist.Sqlite
 import Database.Persist.TH
 import Crypto.PasswordStore
@@ -18,9 +25,6 @@ import Role
 
 
 type UserIdentifier = String
-
-
-database = "db.sqlite"
 
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
@@ -34,13 +38,18 @@ User
 |]
 
 
+
+
+database = "db.sqlite"
+
+
 --TODO: PASSWORD HASHING
 createUser :: UserIdentifier -> String -> String -> Role -> IO User
 createUser ident email pass role = runSqlite database $ do
     runMigration migrateAll
     --passHash <- makePassword (pack pass) 17
     let newUser = User ident email pass role
-    _ <- insert $ newUser
+    _ <- insert newUser
     return newUser
 
 
@@ -86,22 +95,17 @@ getUser ident = runSqlite database $ do
 
 
 isRole :: User -> Role -> Bool
-isRole (User {userRole = (Professor)}) (Professor) = True
+isRole (User {userRole = Professor})   Professor   = True
 isRole (User {userRole = (TA _ _)})    (TA _ _)    = True
 isRole (User {userRole = (Student _)}) (Student _) = True
 isRole _                               _           = False
 
 
 isInYear :: User -> Integer -> Bool
-isInYear (User {userRole = (Professor)})        _ = True
+isInYear (User {userRole = Professor})          _ = True
 isInYear (User {userRole = (TA startTA endTA)}) x = startTA <= x && x <= endTA
 isInYear (User {userRole = (Student year)})     x = year == x
 
 
 isRoleInYear :: User -> Role -> Integer -> Bool
 isRoleInYear user role x = isRole user role && isInYear user x
-
-
-main :: IO ()
-main = runSqlite database $ do
-    runMigration migrateAll
