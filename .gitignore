@@ -49,3 +49,5 @@ progress.txt
 
 # test files
 dist-test
+
+*.save0
