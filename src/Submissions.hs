@@ -19,7 +19,7 @@ data Submission = Submission {
 	solutions	:: [FilePath]
 } deriving (Show, Read)
 
-assignmentHome = "/home/cizl/Assignments/"
+assignmentHome = "/tmp/Assignments/"
 
 -- | Lists the user identifiers for submissions made for an assignment
 --listSubmissions :: Assignment -> IO [UserIdentifier]
