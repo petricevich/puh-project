@@ -82,7 +82,7 @@ getScoreFromDir uId dir = do
 
 
 processScores :: [Score] -> Score
-processScores scores = Score (sum $ map (points) scores) (and $ map (pass) scores)
+processScores scores = Score (sum $ map (points) scores) (all pass scores)
 
 
 typeScore :: Integer -> AType -> UserIdentifier -> IO Score
@@ -90,7 +90,7 @@ typeScore year atype uId = do
     let rootPath = assignmentHome ++ show year ++ "/" ++ show atype
     dirs <- listDirectory rootPath
     let fullPathDirs = map (\x -> rootPath ++ "/" ++ x) dirs
-    scores <- sequence $ map (getScoreFromDir uId) fullPathDirs
+    scores <- mapM (getScoreFromDir uId) fullPathDirs
     return $ processScores scores
 
 
@@ -102,7 +102,7 @@ assignmentScore a uId = do
 
 yearScore :: Integer -> UserIdentifier -> IO Score
 yearScore year uId = do
-    atypeScores <- sequence $ map ((flip . typeScore) year uId) atypes
+    atypeScores <- mapM ((flip . typeScore) year uId) atypes
     return $ processScores atypeScores
 
 
@@ -115,30 +115,30 @@ typeListUsers year atype = do
     let rootFolder = assignmentHome ++ show year ++ "/" ++ show atype ++ "/"
     problemFolders <- listDirectory rootFolder
     let fullProblemFolders = map (\x -> rootFolder ++ x ++ "/") problemFolders
-    users <- sequence $ map (listDirectory) fullProblemFolders
+    users <- mapM (listDirectory) fullProblemFolders
     return $ nub $ concat users
 
 
 yearListUsers :: Integer -> IO [UserIdentifier]
 yearListUsers year = do
     let rootFolder = assignmentHome ++ show year ++ "/"
-    users <- sequence $ map (\x -> typeListUsers year x) atypes
+    users <- mapM (typeListUsers year) atypes
     return $ nub $ concat users
 
 
 ranked :: Integer -> IO [UserScore]
 ranked year = do
     users <- yearListUsers year
-    scores <- sequence $ map (\x -> yearScore year x) users
-    let userScores = map (\x -> UserScore (fst x) (snd x)) $ zip users scores
+    scores <- mapM (yearScore year) users
+    let userScores = map (\x -> uncurry UserScore x) $ zip users scores
     return $ sort userScores
 
 
 typeRanked :: Integer -> AType -> IO [UserScore]
 typeRanked year atype = do
     users <- typeListUsers year atype
-    scores <- sequence $ map (\x -> yearScore year x) users
-    let userScores = map (\x -> UserScore (fst x) (snd x)) $ zip users scores
+    scores <- mapM (yearScore year) users
+    let userScores = map (\x -> uncurry UserScore x) $ zip users scores
     return $ sort userScores
 
 
@@ -146,6 +146,6 @@ assignmentRanked :: Assignment -> IO [UserScore]
 assignmentRanked a = do
     let assignmentPath = getAssignmentPath a
     users <- listDirectory assignmentPath
-    scores <- sequence $ map (\x -> getScoreFromDir x assignmentPath) users
-    let userScores = map (\x -> UserScore (fst x) (snd x)) $ zip users scores
+    scores <- mapM (`getScoreFromDir` assignmentPath) users
+    let userScores = map (\x -> uncurry UserScore x) $ zip users scores
     return $ sort userScores
