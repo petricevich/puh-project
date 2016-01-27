@@ -20,14 +20,15 @@ data Configuration = Configuration {
 	minScore 	 :: Double, -- Minimum achievable
 	maxScore 	 :: Double,	-- Maximum achievable
 	required 	 :: Double	-- Score req to pass
--- Anything else you might think would be useful
 } deriving (Show, Read)
+
+type UserIdentifier = String
 
 -- | An assignment descriptor
 data Assignment = Assignment { 
-	year :: Year, 
-	aType :: AType,
-	number :: Int
--- Anything else you might think would be useful
+	year    :: Year, 
+	aType   :: AType,
+	number  :: Int
+--	userIDs :: [UserIdentifier]
 } deriving (Show, Read)
 
