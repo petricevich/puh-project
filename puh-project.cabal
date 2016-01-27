@@ -3,12 +3,12 @@
 
 name:                puh-project
 version:             0.1.0.0
-synopsis:            Final project for the 2015/2016 haskell class held at the University of Zagreb - FER
+-- synopsis:            
 -- description:         
-license:             MIT
+-- license:             
 license-file:        LICENSE
-author:              Doria&David&Marin
-maintainer:          cromulen7@gmail.com
+author:              David Lozic
+maintainer:          david.lozic@fer.hr
 -- copyright:           
 -- category:            
 build-type:          Simple
@@ -17,12 +17,15 @@ cabal-version:       >=1.10
 
 
 library
-  exposed-modules:     Users
+  exposed-modules:     Users,
+                       Assignments,
+                       Submissions
   other-modules:       Role
   ghc-options:         -Wall
   hs-source-dirs:      src
-  --main-is:             User.hs
   build-depends:       base >= 4.7 && <5,
+
+                       -- for Users
                        persistent ==2.2.4,
                        persistent-sqlite ==2.2,
                        persistent-template ==2.1.5,
@@ -32,5 +35,10 @@ library
                        monad-logger ==0.3.17,
                        pwstore-fast ==2.4.4,
                        bytestring ==0.10.4.0,
-                       text
+                       text,
+
+                       -- for Assignments and Submissions
+                       time >=1.5 && <1.6,
+                       directory >=1.2 && <1.3
+
   default-language:    Haskell2010
