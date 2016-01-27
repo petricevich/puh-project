@@ -10,9 +10,10 @@ config = Configuration
 	["Assignment.hs", "Homework.hs", "Exercises.hs"]
 	5 10 7
 
-assignment = Assignment 2015 Homework 3
+assign= Assignment 2015 Homework 3
+
+sub = Submission "Marin" assign ["Exercises.hs", "Homework.hs"]
 
 main :: IO ()
 main = do
 	putStrLn "da"
-	putStrLn $ show assignment

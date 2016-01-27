@@ -20,5 +20,5 @@ library
   exposed-modules:     Assignments, Submissions
   ghc-options:         -Wall
   hs-source-dirs:      src
-  build-depends:       base >=4.6 && <4.7, QuickCheck >=2.7 && <2.8, time >=1.5 && <1.6, directory >=1.2 && <1.3
+  build-depends:       base >=4.6 && <4.7, QuickCheck >=2.7 && <2.8, time >=1.5 && <1.6, directory >=1.2 && <1.3, text ==0.11.3.1
   default-language:    Haskell2010 
