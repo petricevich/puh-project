@@ -17,7 +17,8 @@ cabal-version:       >=1.10
 
 
 library
-  exposed-modules:     Users,
+  exposed-modules:     Statistics,
+                       Users,
                        Assignments,
                        Submissions
   other-modules:       Role
