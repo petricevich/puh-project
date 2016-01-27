@@ -41,7 +41,6 @@ User
 database = "db.sqlite"
 
 
---TODO: PASSWORD HASHING
 createUser :: UserIdentifier -> String -> String -> Role -> IO User
 createUser ident email pass role = runSqlite database $ do
     runMigration migrateAll

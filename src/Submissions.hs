@@ -61,12 +61,23 @@ readConfiguration a = readFile $ getAssignmentPath a ++ ".config"
 -- | submissions.
 -- | Assignment -> File Body -> File Name -> Error indication (?)
 --upload :: Assignment -> Text -> String -> IO (Maybe Submission)
-{-
+{-}
 upload a fb fn = do
 	conf <- getConfiguration a
+	let path = getAssignmentPath a ++ userID a ++ "/"
 	if (fn `elem` files conf) 
-		then return Submission
+        then do
+        	createDirectoryIfMissing True path
+        	writeFile (path ++ fn) $ unpack fb
+        	return $ Just Submission (userID a)
+        else 
+            return Nothing
 -}
+
+submit :: Assignment -> UserIdentifier -> FilePath -> IO ()
+submit a uId fp = do
+	copyFile fp (getAssignmentPath a ++ uId)
+
 
 -- | Lists the files contained in a submission
 listFiles :: Submission -> IO [FilePath]
