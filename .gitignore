@@ -51,3 +51,4 @@ progress.txt
 dist-test
 
 *.sqlite
+*.save0
