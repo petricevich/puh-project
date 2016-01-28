@@ -16,7 +16,7 @@ module Users ( createUser
              , isRoleInYear
              ) where
 
-
+import Control.Monad.Trans.Reader
 import Database.Persist.Sqlite
 import Database.Persist.TH
 import Crypto.PasswordStore
@@ -44,7 +44,7 @@ database = "db.sqlite"
 createUser :: UserIdentifier -> String -> String -> Role -> IO User
 createUser ident email pass role = runSqlite database $ do
     runMigration migrateAll
-    --passHash <- makePassword (pack pass) 17
+    --passHash <- runReaderT $ makePassword (pack pass) 17
     let newUser = User ident email pass role
     _ <- insert newUser
     return newUser
